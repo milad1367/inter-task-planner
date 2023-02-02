@@ -8,6 +8,7 @@ const initialState = [
     date: sub(new Date(), { minutes: 10 }).toISOString(),
     labels: ["test1", "test2"],
     status: "Pending",
+    comments: ["lorm epsom"],
   },
   {
     title: "test2",
@@ -15,6 +16,7 @@ const initialState = [
     date: sub(new Date(), { minutes: 10 }).toISOString(),
     labels: ["test1", "test2"],
     status: "Processing",
+    comments: ["lorm epsom"],
   },
   {
     title: "test3",
@@ -22,6 +24,7 @@ const initialState = [
     date: sub(new Date(), { minutes: 10 }).toISOString(),
     labels: ["test1", "test2", "test3"],
     status: "Done",
+    comments: ["lorm epsom"],
   },
 ];
 const tasksSlice = createSlice({
