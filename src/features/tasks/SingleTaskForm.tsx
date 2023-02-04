@@ -50,7 +50,6 @@ export const SingleTaskForm = () => {
   const [date, setDate] = React.useState<Dayjs>(task.date);
 
   const [labels, setLabels] = React.useState(task.labels);
-  const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
     navigate("/");
