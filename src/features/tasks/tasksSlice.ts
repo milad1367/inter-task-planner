@@ -1,9 +1,8 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 import { sub } from "date-fns";
-
 const initialState = [
   {
-    id: 1,
+    id: "1",
     title: "test",
     description: "test",
     date: sub(new Date(), { minutes: 10 }).toISOString(),
@@ -12,7 +11,7 @@ const initialState = [
     comments: ["lorm epsom"],
   },
   {
-    id: 2,
+    id: "2",
     title: "test2",
     description: "test2",
     date: sub(new Date(), { minutes: 10 }).toISOString(),
@@ -21,7 +20,7 @@ const initialState = [
     comments: ["lorm epsom"],
   },
   {
-    id: 3,
+    id: "3",
     title: "test3",
     description: "test3",
     date: sub(new Date(), { minutes: 10 }).toISOString(),
@@ -52,9 +51,24 @@ const tasksSlice = createSlice({
         };
       },
     },
+    taskUpdated(state, action) {
+      const { id, title, description, date, labels, status } = action.payload;
+      const existingTask = state.find((task) => task.id === id);
+      if (existingTask) {
+        existingTask.title = title;
+        existingTask.description = description;
+        existingTask.date = date;
+        existingTask.labels = labels;
+        existingTask.status = status;
+      }
+    },
+    removeTask(state, { payload }) {
+      const { taskId } = payload;
+      return (state = state.filter(({ id }) => id !== taskId.toString()));
+    },
   },
 });
 
-export const { taskAdded } = tasksSlice.actions;
+export const { taskAdded, taskUpdated, removeTask } = tasksSlice.actions;
 
 export default tasksSlice.reducer;

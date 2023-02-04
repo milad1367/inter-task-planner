@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import {
   Button,
   Modal,
@@ -14,12 +15,13 @@ import {
 } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { taskAdded } from "../tasksSlice";
 
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import React from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { useDispatch } from "react-redux";
+import { taskUpdated } from "./tasksSlice";
+import { useParams, useNavigate } from "react-router-dom";
 
 const style = {
   position: "absolute" as "absolute",
@@ -33,36 +35,51 @@ const style = {
   p: 4,
 };
 const _labels = ["test1", "test2"];
-export const AddTask = () => {
-  const [open, setOpen] = React.useState(false);
-  const [title, setTitle] = React.useState("");
-  const [description, setDescription] = React.useState("");
-  const [status, setStatus] = React.useState("");
-  const [date, setDate] = React.useState<Dayjs | null>(
-    dayjs("2014-08-18T21:11:54")
+
+export const SingleTaskForm = () => {
+  const { taskId } = useParams();
+  const navigate = useNavigate();
+  const task = useSelector((state: any) =>
+    state.tasks.find((task: any) => task.id === taskId)
   );
 
-  const [labels, setLabels] = React.useState([_labels[0]]);
+  const [open, setOpen] = React.useState(true);
+  const [title, setTitle] = React.useState(task.title);
+  const [description, setDescription] = React.useState(task.description);
+  const [status, setStatus] = React.useState(task.status);
+  const [date, setDate] = React.useState<Dayjs>(task.date);
+
+  const [labels, setLabels] = React.useState(task.labels);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    navigate("/");
+  };
   const handleSelectChange = (event: SelectChangeEvent) => {
     setStatus(event.target.value as string);
   };
 
   const handleDateChange = (newValue: Dayjs | null) => {
-    setDate(newValue);
+    setDate(newValue || dayjs());
   };
   const dispatch = useDispatch();
 
-  const onAddedTask = () => {
-    dispatch(taskAdded(title, description, date, labels, status));
+  const onUpdateTask = () => {
+    dispatch(
+      taskUpdated({
+        id: taskId,
+        title,
+        description,
+        date: dayjs(date).toISOString(), //TODO, IT CAN BE IN PREPARE
+        labels,
+        status,
+      })
+    );
+    navigate("/");
   };
 
   return (
-    <div>
-      <Button onClick={handleOpen} variant="outlined">
-        Add Task
-      </Button>
+    <>
       <Modal
         open={open}
         onClose={handleClose}
@@ -71,7 +88,7 @@ export const AddTask = () => {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Add new Task
+            Task
           </Typography>
           <Box sx={{ display: "flex", flexWrap: "wrap" }}>
             <FormControl fullWidth sx={{ m: 1 }}>
@@ -113,9 +130,9 @@ export const AddTask = () => {
                 label="Status"
                 onChange={handleSelectChange}
               >
-                <MenuItem value={1}>Pending</MenuItem>
-                <MenuItem value={2}>Processing</MenuItem>
-                <MenuItem value={3}>Done</MenuItem>
+                <MenuItem value={"Pending"}>Pending</MenuItem>
+                <MenuItem value={"Processing"}>Processing</MenuItem>
+                <MenuItem value={"Done"}>Done</MenuItem>
               </Select>
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }}>
@@ -126,6 +143,7 @@ export const AddTask = () => {
                 getOptionLabel={(option) => option}
                 value={labels}
                 onChange={(event, newValue) => {
+                  //   const values = newValue.map((item) => item.title);
                   setLabels([...newValue]);
                 }}
                 renderInput={(params) => (
@@ -140,17 +158,17 @@ export const AddTask = () => {
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }}>
               <Button
-                onClick={onAddedTask}
+                onClick={onUpdateTask}
                 fullWidth
                 variant="contained"
                 color="success"
               >
-                Add
+                Save
               </Button>
             </FormControl>
           </Box>
         </Box>
       </Modal>
-    </div>
+    </>
   );
 };

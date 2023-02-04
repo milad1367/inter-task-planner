@@ -6,7 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { Home } from "./app/Home";
-
+import { SingleTaskForm } from "./features/tasks/SingleTaskForm";
 import "./App.css";
 
 function App() {
@@ -15,8 +15,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* <Route exact path="/tasks/:taskId" component={SingleTaskPage} />
-          <Route exact path="/editTask/:taskId" component={EditTaskForm} /> */}
+          <Route path="/tasks/:taskId" element={<SingleTaskForm />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
