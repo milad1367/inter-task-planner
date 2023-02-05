@@ -20,7 +20,8 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import React from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { useDispatch } from "react-redux";
-
+import { labels as _labels } from "../../../consts";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -32,15 +33,12 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-const _labels = ["test1", "test2"];
 export const AddTask = () => {
   const [open, setOpen] = React.useState(false);
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [status, setStatus] = React.useState("");
-  const [date, setDate] = React.useState<Dayjs | null>(
-    dayjs("2014-08-18T21:11:54")
-  );
+  const [date, setDate] = React.useState<Dayjs | null>(dayjs());
 
   const [labels, setLabels] = React.useState([_labels[0]]);
   const handleOpen = () => setOpen(true);
@@ -59,9 +57,9 @@ export const AddTask = () => {
   };
 
   return (
-    <div>
+    <>
       <Button onClick={handleOpen} variant="outlined">
-        Add Task
+        <AddOutlinedIcon /> Add Task
       </Button>
       <Modal
         open={open}
@@ -151,6 +149,6 @@ export const AddTask = () => {
           </Box>
         </Box>
       </Modal>
-    </div>
+    </>
   );
 };
