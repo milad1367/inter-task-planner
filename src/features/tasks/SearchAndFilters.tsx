@@ -13,8 +13,8 @@ import { useSearchParams } from "react-router-dom";
 import ImageSearchOutlinedIcon from "@mui/icons-material/ImageSearchOutlined";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const style = {
   position: "absolute" as "absolute",
@@ -29,9 +29,12 @@ const style = {
 };
 
 export const SearchAndFilters = () => {
-  let [, setSearchParams] = useSearchParams();
-  const [search, setSearch] = useState("");
-  const [date, setDate] = useState<Dayjs | null>(null);
+  let [params, setParams] = useSearchParams();
+  const filter = params.get("filter");
+  const defaultDate = filter ? dayjs(filter) : null;
+  const key = params.get("key");
+  const [search, setSearch] = useState(key || "");
+  const [date, setDate] = useState<Dayjs | null>(defaultDate);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -44,9 +47,9 @@ export const SearchAndFilters = () => {
       params = { ...params, key: search };
     }
     if (date) {
-      params = { ...params, filter: date.toISOString() };
+      params = { ...params, filter: date.format() };
     }
-    setSearchParams(params); // TODO NEED MORE SAFE WAY! //http://localhost:3000/?filter=2023-02-03T22%3A39%3A00.000Z
+    setParams(params); // TODO NEED MORE SAFE WAY! //http://localhost:3000/?filter=2023-02-03T22%3A39%3A00.000Z
     handleClose();
   };
   return (
@@ -76,7 +79,7 @@ export const SearchAndFilters = () => {
               />
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }}>
-              <LocalizationProvider dateAdapter={AdapterMoment}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateTimePicker
                   label="Date&Time picker"
                   value={date}
