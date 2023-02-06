@@ -7,7 +7,7 @@ import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
 import { useSelector } from "react-redux";
-import { percentage } from "../../utils/percentage";
+import { percentage } from "../../utils";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 20,

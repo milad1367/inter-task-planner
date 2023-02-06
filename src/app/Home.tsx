@@ -1,6 +1,6 @@
 import { AddTask } from "../features/tasks/addTask/AddTask";
 import { Progress } from "../features/tasks/Progress";
-import { TaskList } from "../features/tasks/taskList/TaskList";
+import { Boards } from "../features/tasks/boards/Boards";
 import Stack from "@mui/material/Stack";
 import { SearchAndFilters } from "../features/tasks/SearchAndFilters";
 
@@ -12,7 +12,7 @@ export const Home = () => {
         <SearchAndFilters />
         <AddTask />
       </Stack>
-      <TaskList />
+      <Boards />
     </Stack>
   );
 };

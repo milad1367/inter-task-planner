@@ -1,6 +1,15 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 import { sub } from "date-fns";
-const initialState = [
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  labels: string[];
+  status: string;
+  comments: string[];
+}
+const initialState: any = [
   {
     id: "1",
     title: "test",
@@ -44,7 +53,7 @@ const tasksSlice = createSlice({
   reducers: {
     taskAdded: {
       reducer(state, action: any) {
-        state.push(action.payload);
+        state.push(action.payload); // Important note, redux toolkit hast internal Immer, so I can change state directly
       },
       prepare(title, description, date, labels, status) {
         return {
@@ -62,22 +71,27 @@ const tasksSlice = createSlice({
     },
     taskUpdated(state, action) {
       const { id, title, description, date, labels, status } = action.payload;
-      const existingTask = state.find((task) => task.id === id);
+      const existingTask = state.find((task: any) => task.id === id);
       if (existingTask) {
-        existingTask.title = title;
-        existingTask.description = description;
-        existingTask.date = date;
-        existingTask.labels = labels;
-        existingTask.status = status;
+        existingTask.title = title || existingTask.title;
+        existingTask.description = description || existingTask.description;
+        existingTask.date = date || existingTask.date;
+        existingTask.labels = labels || existingTask.labels;
+        existingTask.status = status || existingTask.status;
       }
     },
     removeTask(state, { payload }) {
       const { taskId } = payload;
-      return (state = state.filter(({ id }) => id !== taskId.toString()));
+      return state.filter(({ id }: any) => id !== taskId.toString());
+    },
+    setTasks(state, { payload }) {
+      const { newTasks } = payload;
+      return newTasks;
     },
   },
 });
 
-export const { taskAdded, taskUpdated, removeTask } = tasksSlice.actions;
+export const { taskAdded, taskUpdated, removeTask, setTasks } =
+  tasksSlice.actions;
 
 export default tasksSlice.reducer;
