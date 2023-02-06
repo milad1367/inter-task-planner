@@ -3,12 +3,15 @@ import { useDispatch } from "react-redux";
 import DriveFileMoveIcon from "@mui/icons-material/DriveFileMove";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { removeTask } from "./tasksSlice";
+import { HighlightText } from "../../components/HighlightText";
 
 export const TaskBox = ({ id, title, description, labels }: any) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  let [params] = useSearchParams();
+  const key = params.get("key") || "";
   const handleOnDelete = (taskId: string) => {
     dispatch(removeTask({ taskId }));
   };
@@ -48,12 +51,26 @@ export const TaskBox = ({ id, title, description, labels }: any) => {
         </Grid>
       </Grid>
       <Grid item xs={12}>
-        Task:<h2>{title}</h2>
-        Description:<h2>{description}</h2>
+        Task:
+        <h2>
+          <HighlightText term={key}>{title}</HighlightText>
+        </h2>
+        Description:
+        <h2>
+          <HighlightText term={key}>{description}</HighlightText>
+        </h2>
         Labels:
         <Stack direction="row" spacing={1}>
           {labels.map((label: any, index: number) => (
-            <Chip key={index} label={label} color="primary" />
+            <Chip
+              key={index}
+              label={
+                <HighlightText term={key} key={`label-highlight-text-${index}`}>
+                  {label}
+                </HighlightText>
+              }
+              color="primary"
+            />
           ))}
         </Stack>
       </Grid>
