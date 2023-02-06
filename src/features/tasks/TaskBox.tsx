@@ -53,11 +53,11 @@ export const TaskBox = ({ id, title, description, labels }: any) => {
       <Grid item xs={12}>
         Task:
         <h2>
-          <HighlightText term={key}>{title}</HighlightText>
+          <HighlightText searchText={key}>{title}</HighlightText>
         </h2>
         Description:
         <h2>
-          <HighlightText term={key}>{description}</HighlightText>
+          <HighlightText searchText={key}>{description}</HighlightText>
         </h2>
         Labels:
         <Stack direction="row" spacing={1}>
@@ -65,7 +65,10 @@ export const TaskBox = ({ id, title, description, labels }: any) => {
             <Chip
               key={index}
               label={
-                <HighlightText term={key} key={`label-highlight-text-${index}`}>
+                <HighlightText
+                  searchText={key}
+                  key={`label-highlight-text-${index}`}
+                >
                   {label}
                 </HighlightText>
               }

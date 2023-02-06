@@ -1,18 +1,18 @@
 export const HighlightText = ({
   children,
-  term,
+  searchText,
 }: {
   children: string;
-  term: string;
+  searchText: string;
 }) => {
-  const parts = children.split(new RegExp(`(${term})`, "gi"));
+  const parts = children.split(new RegExp(`(${searchText})`, "gi"));
   return (
     <span>
       {parts.map((part, i) => (
         <span
           key={i}
           style={
-            part.toLowerCase() === term.toLowerCase()
+            part.toLowerCase() === searchText.toLowerCase()
               ? { fontWeight: "bold", backgroundColor: "#e8bb49" }
               : {}
           }
