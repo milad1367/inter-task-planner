@@ -62,7 +62,7 @@ export const AddTask = () => {
   };
   const dispatch = useDispatch();
 
-  const onAddedTask = () => {
+  const handleOnAddedTask = () => {
     dispatch(taskAdded(title, description, date, labels, status, attachments));
     handleClose();
   };
@@ -82,89 +82,95 @@ export const AddTask = () => {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Add new Task
           </Typography>
-          <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <InputLabel htmlFor="outlined-adornment-title">Title</InputLabel>
-              <OutlinedInput
-                value={title}
-                onChange={(e: any) => setTitle(e.target.value)}
-                id="outlined-adornment-title"
-                label="Title"
-              />
-            </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <InputLabel htmlFor="outlined-adornment-description">
-                Description
-              </InputLabel>
-              <OutlinedInput
-                id="outlined-adornment-description"
-                label="Description"
-                value={description}
-                onChange={(e: any) => setDescription(e.target.value)}
-              />
-            </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <LocalizationProvider dateAdapter={AdapterMoment}>
-                <DateTimePicker
-                  label="Date&Time picker"
-                  value={date}
-                  onChange={handleDateChange}
-                  renderInput={(params: any) => <TextField {...params} />}
+          <form onSubmit={handleOnAddedTask}>
+            <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <InputLabel htmlFor="outlined-adornment-title">
+                  Title
+                </InputLabel>
+                <OutlinedInput
+                  value={title}
+                  onChange={(e: any) => setTitle(e.target.value)}
+                  id="outlined-adornment-title"
+                  label="Title"
+                  required
                 />
-              </LocalizationProvider>
-            </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <InputLabel id="select-label">Status</InputLabel>
-              <Select
-                labelId="select-label"
-                id="status-select"
-                value={status}
-                label="Status"
-                onChange={handleSelectChange}
-              >
-                <MenuItem value={"Pending"}>Pending</MenuItem>
-                <MenuItem value={"Processing"}>Processing</MenuItem>
-                <MenuItem value={"Done"}>Done</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <Autocomplete
-                multiple
-                id="tags-standard"
-                options={_labels}
-                getOptionLabel={(option) => option}
-                value={labels}
-                onChange={(event, newValue) => {
-                  setLabels([...newValue]);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="standard"
-                    label="Labels"
-                    placeholder="Favorites"
+              </FormControl>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <InputLabel htmlFor="outlined-adornment-description">
+                  Description
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-description"
+                  label="Description"
+                  value={description}
+                  onChange={(e: any) => setDescription(e.target.value)}
+                />
+              </FormControl>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                  <DateTimePicker
+                    label="Date&Time picker"
+                    value={date}
+                    onChange={handleDateChange}
+                    renderInput={(params: any) => <TextField {...params} />}
                   />
-                )}
-              />
-            </FormControl>
-            <FormControl sx={{ m: 1 }}>
-              <Upload
-                onChange={(attachments: string[]) =>
-                  setAttachments(attachments)
-                }
-              />
-            </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <Button
-                onClick={onAddedTask}
-                fullWidth
-                variant="contained"
-                color="success"
-              >
-                Add
-              </Button>
-            </FormControl>
-          </Box>
+                </LocalizationProvider>
+              </FormControl>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <InputLabel id="select-label">Status</InputLabel>
+                <Select
+                  labelId="select-label"
+                  id="status-select"
+                  value={status}
+                  label="Status"
+                  required
+                  onChange={handleSelectChange}
+                >
+                  <MenuItem value={"Pending"}>Pending</MenuItem>
+                  <MenuItem value={"Processing"}>Processing</MenuItem>
+                  <MenuItem value={"Done"}>Done</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <Autocomplete
+                  multiple
+                  id="tags-standard"
+                  options={_labels}
+                  getOptionLabel={(option) => option}
+                  value={labels}
+                  onChange={(event, newValue) => {
+                    setLabels([...newValue]);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="standard"
+                      label="Labels"
+                      placeholder="Favorites"
+                    />
+                  )}
+                />
+              </FormControl>
+              <FormControl sx={{ m: 1 }}>
+                <Upload
+                  onChange={(attachments: string[]) =>
+                    setAttachments(attachments)
+                  }
+                />
+              </FormControl>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="success"
+                >
+                  Add
+                </Button>
+              </FormControl>
+            </Box>
+          </form>
         </Box>
       </Modal>
     </>
