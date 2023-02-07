@@ -15,8 +15,10 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/tasks/:taskId" element={<SingleTaskForm />} />
+          <Route index element={<Home />} />
+          <Route path="tasks" element={<Home />}>
+            <Route path=":taskId" element={<SingleTaskForm />}></Route>
+          </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

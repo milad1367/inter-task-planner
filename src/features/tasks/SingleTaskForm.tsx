@@ -126,7 +126,6 @@ export const SingleTaskForm = () => {
                 placeholder="Add your comment"
                 multiline
                 rows={2}
-                maxRows={4}
               />
             </FormControl>
             <FormControl sx={{ m: 1 }}>
@@ -166,7 +165,7 @@ export const SingleTaskForm = () => {
               </Select>
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }}>
-              <Autocomplete
+              {/* <Autocomplete
                 multiple
                 id="tags-standard"
                 options={_labels}
@@ -184,7 +183,7 @@ export const SingleTaskForm = () => {
                     placeholder="Favorites"
                   />
                 )}
-              />
+              /> */}
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }}>
               <Button
@@ -199,7 +198,7 @@ export const SingleTaskForm = () => {
             <div>
               comments:
               {task.comments.map((comment: string) => (
-                <div> {comment} </div>
+                <div key={comment}> {comment} </div>
               ))}
             </div>
           </Box>
