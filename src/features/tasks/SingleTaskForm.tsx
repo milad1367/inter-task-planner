@@ -17,7 +17,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import React from "react";
+import { useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { useDispatch } from "react-redux";
 import { taskUpdated } from "./tasksSlice";
@@ -46,18 +46,22 @@ export const SingleTaskForm = () => {
     state.tasks.find((task: any) => task.id === taskId)
   );
 
-  const [open, setOpen] = React.useState(true);
-  const [title, setTitle] = React.useState(task.title);
-  const [description, setDescription] = React.useState(task.description);
-  const [status, setStatus] = React.useState(task.status);
-  const [date, setDate] = React.useState<Dayjs>(task.date);
-
-  const [labels, setLabels] = React.useState(task.labels);
-  const [attachments, setAttachments] = React.useState<string[]>(
+  const [open, setOpen] = useState(true);
+  const [title, setTitle] = useState(task.title);
+  const [description, setDescription] = useState(task.description);
+  const [status, setStatus] = useState(task.status);
+  const [date, setDate] = useState<Dayjs>(task.date);
+  const [comment, setComment] = useState<string>("");
+  const [labels, setLabels] = useState(task.labels);
+  const [attachments, setAttachments] = useState<string[]>(
     task?.attachments || []
   );
+  const onResetStates = () => {
+    setComment("");
+  };
   const handleClose = () => {
     setOpen(false);
+    onResetStates();
     navigate("/");
   };
   const handleSelectChange = (event: SelectChangeEvent) => {
@@ -75,13 +79,11 @@ export const SingleTaskForm = () => {
         id: taskId,
         title,
         description,
-        date: dayjs(date).toISOString(), //TODO, IT CAN BE IN PREPARE
-        labels,
-        status,
+        comment,
         attachments,
       })
     );
-    navigate("/");
+    onResetStates();
   };
 
   return (
@@ -118,10 +120,31 @@ export const SingleTaskForm = () => {
               />
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }}>
+              <TextField
+                onChange={(e: any) => setComment(e.target.value)}
+                value={comment}
+                placeholder="Add your comment"
+                multiline
+                rows={2}
+                maxRows={4}
+              />
+            </FormControl>
+            <FormControl sx={{ m: 1 }}>
+              <Upload
+                list={attachments}
+                onChange={(attachments: string[]) =>
+                  setAttachments(attachments)
+                }
+                titleButton={"Add Attachment"}
+              />
+            </FormControl>
+
+            <FormControl fullWidth sx={{ m: 1 }}>
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <DateTimePicker
                   label="Date&Time picker"
                   value={date}
+                  disabled
                   onChange={handleDateChange}
                   renderInput={(params: any) => <TextField {...params} />}
                 />
@@ -133,6 +156,7 @@ export const SingleTaskForm = () => {
                 labelId="select-label"
                 id="status-select"
                 value={status}
+                disabled
                 label="Status"
                 onChange={handleSelectChange}
               >
@@ -148,8 +172,8 @@ export const SingleTaskForm = () => {
                 options={_labels}
                 getOptionLabel={(option) => option}
                 value={labels}
+                disabled
                 onChange={(event, newValue) => {
-                  //   const values = newValue.map((item) => item.title);
                   setLabels([...newValue]);
                 }}
                 renderInput={(params) => (
@@ -162,15 +186,6 @@ export const SingleTaskForm = () => {
                 )}
               />
             </FormControl>
-            <FormControl sx={{ m: 1 }}>
-              <Upload
-                list={attachments}
-                onChange={(attachments: string[]) =>
-                  setAttachments(attachments)
-                }
-              />
-            </FormControl>
-
             <FormControl fullWidth sx={{ m: 1 }}>
               <Button
                 onClick={onUpdateTask}
@@ -181,6 +196,12 @@ export const SingleTaskForm = () => {
                 Save
               </Button>
             </FormControl>
+            <div>
+              comments:
+              {task.comments.map((comment: string) => (
+                <div> {comment} </div>
+              ))}
+            </div>
           </Box>
         </Box>
       </Modal>

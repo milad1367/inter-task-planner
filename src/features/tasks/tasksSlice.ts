@@ -76,16 +76,15 @@ const tasksSlice = createSlice({
       },
     },
     taskUpdated(state, action) {
-      const { id, title, description, date, labels, status, attachments } =
-        action.payload;
+      const { id, title, description, comment, attachments } = action.payload;
       const existingTask = state.find((task: any) => task.id === id);
       if (existingTask) {
-        existingTask.title = title || existingTask.title; //TODO we dont need to update all property
-        existingTask.description = description || existingTask.description; //TODO
-        existingTask.date = date || existingTask.date;
-        existingTask.labels = labels || existingTask.labels;
-        existingTask.status = status || existingTask.status;
+        existingTask.title = title;
+        existingTask.description = description;
         existingTask.attachments = attachments;
+        if (!!comment) {
+          existingTask.comments.push(comment);
+        }
       }
     },
     removeTask(state, { payload }) {

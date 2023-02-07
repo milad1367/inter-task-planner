@@ -5,8 +5,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 interface UploadProps {
   list?: string[];
   onChange: (files: string[]) => void;
+  titleButton?: string;
 }
-export const Upload = ({ list = [], onChange }: UploadProps) => {
+export const Upload = ({ list = [], onChange, titleButton }: UploadProps) => {
   const [files, setFiles] = useState<string[]>(list || []);
   const onDelete = (index: number) => {
     const shallowFiles = files.slice();
@@ -15,7 +16,6 @@ export const Upload = ({ list = [], onChange }: UploadProps) => {
   };
   useEffect(() => {
     onChange(files);
-    console.log("deleter");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(files)]);
   const OnChange = (e: any) => {
@@ -37,7 +37,7 @@ export const Upload = ({ list = [], onChange }: UploadProps) => {
         </div>
       ))}
       <Button variant="contained" component="label">
-        Upload
+        {titleButton ? `${titleButton}` : "Upload"}
         <input
           onChange={OnChange}
           hidden

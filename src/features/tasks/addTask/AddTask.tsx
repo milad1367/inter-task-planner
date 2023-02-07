@@ -60,7 +60,7 @@ export const AddTask = () => {
   const onAddedTask = () => {
     dispatch(taskAdded(title, description, date, labels, status, attachments));
   };
-
+  //TODO some inputs are required
   return (
     <>
       <Button onClick={handleOpen} variant="outlined">
