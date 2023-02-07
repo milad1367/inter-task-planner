@@ -44,10 +44,15 @@ export const AddTask = () => {
   const [attachments, setAttachments] = React.useState<string[]>([]);
   const [status, setStatus] = React.useState("");
   const [date, setDate] = React.useState<Dayjs | null>(dayjs());
-
   const [labels, setLabels] = React.useState([_labels[0]]);
+
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setTitle(""); //TODO, change to useReducer, as a object
+    setDescription("");
+    //...
+  };
   const handleSelectChange = (event: SelectChangeEvent) => {
     setStatus(event.target.value as string);
   };
@@ -59,6 +64,7 @@ export const AddTask = () => {
 
   const onAddedTask = () => {
     dispatch(taskAdded(title, description, date, labels, status, attachments));
+    handleClose();
   };
   //TODO some inputs are required
   return (

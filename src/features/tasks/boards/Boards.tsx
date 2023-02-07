@@ -1,6 +1,5 @@
 import { useAppSelector } from "../../../app/hooks";
 import { useSearchParams } from "react-router-dom";
-import { createSelector } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
 import { DragDropContext } from "react-beautiful-dnd";
 import { DropResult } from "react-beautiful-dnd";
@@ -10,41 +9,40 @@ import { TaskBoard } from "../TaskBoard";
 import { useDispatch } from "react-redux";
 import { setTasks } from "../tasksSlice";
 import { removeByIndex, reorder } from "../../../utils";
+import { useMemo } from "react";
 
 export const Boards = () => {
   const [params] = useSearchParams();
   const dispatch = useDispatch();
   const filter = params.get("filter");
   const key = params.get("key") || "";
+  const tasks = useAppSelector((state: any) => state.tasks);
 
-  const filteredTasksSelector = createSelector(
-    (state: any) => state.tasks,
-    (tasks) => {
-      if (!key && !filter) {
-        return tasks;
-      }
-      return tasks?.filter((task: any) => {
-        let isInTime = true;
-        if (filter) {
-          const taskDate = dayjs(task.date);
-          const filterDate = dayjs(filter);
-
-          isInTime = taskDate.isBefore(filterDate);
-        }
-        const picked = (({ title, description, labels }) => ({
-          title,
-          description,
-          labels,
-        }))(task);
-        const hasKey = JSON.stringify(picked)
-          .toLowerCase()
-          .includes(key.toLowerCase());
-
-        return hasKey && isInTime;
-      });
+  const filteredTasks = useMemo(() => {
+    if (!key && !filter) {
+      return tasks;
     }
-  );
-  const tasks = useAppSelector(filteredTasksSelector);
+    return tasks?.filter((task: any) => {
+      let isInTime = true;
+      if (filter) {
+        const taskDate = dayjs(task.date);
+        const filterDate = dayjs(filter);
+
+        isInTime = taskDate.isBefore(filterDate);
+      }
+      const picked = (({ title, description, labels }) => ({
+        title,
+        description,
+        labels,
+      }))(task);
+      const hasKey = JSON.stringify(picked)
+        .toLowerCase()
+        .includes(key.toLowerCase());
+
+      return hasKey && isInTime;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(tasks), key, filter]);
 
   const onDragEnd = (res: DropResult) => {
     // TODO WRAP IN USECALLBACK
@@ -111,7 +109,9 @@ export const Boards = () => {
             <Grid key={board} item xs={4}>
               <TaskBoard
                 title={board}
-                tasks={tasks.filter((item: any) => item.status === board)}
+                tasks={filteredTasks.filter(
+                  (item: any) => item.status === board
+                )}
                 tasksType={board}
               />
             </Grid>
