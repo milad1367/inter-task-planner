@@ -22,12 +22,16 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { useDispatch } from "react-redux";
 import { labels as _labels } from "../../../consts";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { Upload } from "../../../components/upload/Upload";
+
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 400,
+  overflow: "auto",
+  height: "90%",
   bgcolor: "background.paper",
   borderRadius: 2,
   boxShadow: 24,
@@ -37,6 +41,7 @@ export const AddTask = () => {
   const [open, setOpen] = React.useState(false);
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
+  const [attachments, setAttachments] = React.useState<string[]>([]);
   const [status, setStatus] = React.useState("");
   const [date, setDate] = React.useState<Dayjs | null>(dayjs());
 
@@ -53,7 +58,7 @@ export const AddTask = () => {
   const dispatch = useDispatch();
 
   const onAddedTask = () => {
-    dispatch(taskAdded(title, description, date, labels, status));
+    dispatch(taskAdded(title, description, date, labels, status, attachments));
   };
 
   return (
@@ -111,9 +116,9 @@ export const AddTask = () => {
                 label="Status"
                 onChange={handleSelectChange}
               >
-                <MenuItem value={1}>Pending</MenuItem>
-                <MenuItem value={2}>Processing</MenuItem>
-                <MenuItem value={3}>Done</MenuItem>
+                <MenuItem value={"Pending"}>Pending</MenuItem>
+                <MenuItem value={"Processing"}>Processing</MenuItem>
+                <MenuItem value={"Done"}>Done</MenuItem>
               </Select>
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }}>
@@ -134,6 +139,13 @@ export const AddTask = () => {
                     placeholder="Favorites"
                   />
                 )}
+              />
+            </FormControl>
+            <FormControl sx={{ m: 1 }}>
+              <Upload
+                onChange={(attachments: string[]) =>
+                  setAttachments(attachments)
+                }
               />
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }}>

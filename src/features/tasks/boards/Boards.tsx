@@ -47,6 +47,7 @@ export const Boards = () => {
   const tasks = useAppSelector(filteredTasksSelector);
 
   const onDragEnd = (res: DropResult) => {
+    // TODO WRAP IN USECALLBACK
     const { source, destination } = res;
     if (!destination) return;
     const itemsSplitByListIds = groupBy(tasks, (task: any) => {

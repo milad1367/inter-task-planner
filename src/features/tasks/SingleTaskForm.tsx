@@ -22,11 +22,14 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { useDispatch } from "react-redux";
 import { taskUpdated } from "./tasksSlice";
 import { useParams, useNavigate } from "react-router-dom";
+import { Upload } from "../../components/upload/Upload";
 
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
   left: "50%",
+  height: "90%",
+  overflow: "auto",
   transform: "translate(-50%, -50%)",
   width: 400,
   bgcolor: "background.paper",
@@ -34,7 +37,7 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-const _labels = ["test1", "test2"];
+const _labels = ["test1", "test2"]; //TODO
 
 export const SingleTaskForm = () => {
   const { taskId } = useParams();
@@ -50,6 +53,9 @@ export const SingleTaskForm = () => {
   const [date, setDate] = React.useState<Dayjs>(task.date);
 
   const [labels, setLabels] = React.useState(task.labels);
+  const [attachments, setAttachments] = React.useState<string[]>(
+    task?.attachments || []
+  );
   const handleClose = () => {
     setOpen(false);
     navigate("/");
@@ -72,6 +78,7 @@ export const SingleTaskForm = () => {
         date: dayjs(date).toISOString(), //TODO, IT CAN BE IN PREPARE
         labels,
         status,
+        attachments,
       })
     );
     navigate("/");
@@ -155,6 +162,15 @@ export const SingleTaskForm = () => {
                 )}
               />
             </FormControl>
+            <FormControl sx={{ m: 1 }}>
+              <Upload
+                list={attachments}
+                onChange={(attachments: string[]) =>
+                  setAttachments(attachments)
+                }
+              />
+            </FormControl>
+
             <FormControl fullWidth sx={{ m: 1 }}>
               <Button
                 onClick={onUpdateTask}

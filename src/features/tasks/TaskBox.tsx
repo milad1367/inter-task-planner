@@ -1,4 +1,4 @@
-import { Chip, Stack, Grid, IconButton } from "@mui/material";
+import { Chip, Stack, Grid, IconButton, Button } from "@mui/material";
 import { useDispatch } from "react-redux";
 import DriveFileMoveIcon from "@mui/icons-material/DriveFileMove";
 import EditIcon from "@mui/icons-material/Edit";
@@ -7,7 +7,13 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { removeTask } from "./tasksSlice";
 import { HighlightText } from "../../components/HighlightText";
 
-export const TaskBox = ({ id, title, description, labels }: any) => {
+export const TaskBox = ({
+  id,
+  title,
+  description,
+  labels,
+  attachments,
+}: any) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   let [params] = useSearchParams();
@@ -76,6 +82,11 @@ export const TaskBox = ({ id, title, description, labels }: any) => {
             />
           ))}
         </Stack>
+        {!!attachments.length && (
+          <Button onClick={() => navigate(`/tasks/${id}`)} size="large">
+            VIEW ATTACHMENTS
+          </Button>
+        )}
       </Grid>
     </div>
   );
