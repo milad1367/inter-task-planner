@@ -3,15 +3,11 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 import styled from "styled-components";
 
 const Container = styled.div`
-  min-width: 250px;
   padding: 5px;
   box-sizing: border-box;
   margin-left: 5px;
   border-radius: 5px;
   background: white;
-  background: rgb(235, 236, 240);
-  width: 250px;
-  min-height: 100px;
 `;
 export const TaskBoard = ({
   title,
@@ -27,12 +23,11 @@ export const TaskBoard = ({
     padding: "10px",
     marginBottom: "5px",
     borderRadius: "5px",
-    borderBottom: "1px solid rgb(178,185,197)",
 
     ...draggableStyle,
   });
   const getListStyle = (isDraggingOver: boolean) => ({
-    minHeight: 70,
+    minHeight: 350,
   });
   return (
     <Container>

@@ -11,7 +11,6 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
-  Autocomplete,
 } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
@@ -37,7 +36,7 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-const _labels = ["test1", "test2"]; //TODO
+// const _labels = ["test1", "test2"]; //TODO
 
 export const SingleTaskForm = () => {
   const { taskId } = useParams();
@@ -52,7 +51,7 @@ export const SingleTaskForm = () => {
   const [status, setStatus] = useState(task.status);
   const [date, setDate] = useState<Dayjs>(task.date);
   const [comment, setComment] = useState<string>("");
-  const [labels, setLabels] = useState(task.labels);
+  // const [labels, setLabels] = useState(task.labels);
   const [attachments, setAttachments] = useState<string[]>(
     task?.attachments || []
   );

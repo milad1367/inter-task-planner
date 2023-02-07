@@ -104,18 +104,20 @@ export const Boards = () => {
   return (
     <section>
       <h2>Boards</h2>
-      <Grid container spacing={{ xs: 4 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-        <DragDropContext onDragEnd={onDragEnd}>
+
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Grid container spacing={2}>
           {boards.map((board: string) => (
-            <TaskBoard
-              key={board}
-              title={board}
-              tasks={tasks.filter((item: any) => item.status === board)}
-              tasksType={board}
-            />
+            <Grid key={board} item xs={4}>
+              <TaskBoard
+                title={board}
+                tasks={tasks.filter((item: any) => item.status === board)}
+                tasksType={board}
+              />
+            </Grid>
           ))}
-        </DragDropContext>
-      </Grid>
+        </Grid>
+      </DragDropContext>
     </section>
   );
 };
