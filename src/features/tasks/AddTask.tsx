@@ -14,15 +14,15 @@ import {
 } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { taskAdded } from "../tasksSlice";
+import { taskAdded } from "./tasksSlice";
 
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import React from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { useDispatch } from "react-redux";
-import { labels as _labels } from "../../../consts";
+import { labels as _labels } from "../../consts";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import { Upload } from "../../../components/upload/Upload";
+import { Upload } from "../../components/Upload";
 
 const style = {
   position: "absolute" as "absolute",

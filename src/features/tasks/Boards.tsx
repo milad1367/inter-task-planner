@@ -1,14 +1,14 @@
-import { useAppSelector } from "../../../app/hooks";
+import { useAppSelector } from "../../app/hooks";
 import { useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
 import { DragDropContext } from "react-beautiful-dnd";
 import { DropResult } from "react-beautiful-dnd";
 import { groupBy } from "lodash";
 import { Grid } from "@mui/material";
-import { TaskBoard } from "../TaskBoard";
+import { TaskBoard } from "./TaskBoard";
 import { useDispatch } from "react-redux";
-import { setTasks } from "../tasksSlice";
-import { removeByIndex, reorder } from "../../../utils";
+import { setTasks } from "./tasksSlice";
+import { removeByIndex, reorder } from "../../utils";
 import { useMemo } from "react";
 
 export const Boards = () => {

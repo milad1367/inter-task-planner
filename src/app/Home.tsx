@@ -1,6 +1,6 @@
-import { AddTask } from "../features/tasks/addTask/AddTask";
+import { AddTask } from "../features/tasks/AddTask";
 import { Progress } from "../features/tasks/Progress";
-import { Boards } from "../features/tasks/boards/Boards";
+import { Boards } from "../features/tasks/Boards";
 import Stack from "@mui/material/Stack";
 import { SearchAndFilters } from "../features/tasks/SearchAndFilters";
 import { Outlet } from "react-router-dom";

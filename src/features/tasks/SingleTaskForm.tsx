@@ -21,7 +21,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { useDispatch } from "react-redux";
 import { taskUpdated } from "./tasksSlice";
 import { useParams, useNavigate } from "react-router-dom";
-import { Upload } from "../../components/upload/Upload";
+import { Upload } from "../../components/Upload";
 
 const style = {
   position: "absolute" as "absolute",
