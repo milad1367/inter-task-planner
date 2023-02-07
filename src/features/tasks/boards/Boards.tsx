@@ -113,6 +113,7 @@ export const Boards = () => {
                   (item: any) => item.status === board
                 )}
                 tasksType={board}
+                allTasksLength={tasks.length}
               />
             </Grid>
           ))}

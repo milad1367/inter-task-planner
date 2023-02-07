@@ -32,7 +32,7 @@ export const Progress = () => {
     <Box sx={{ p: 2, background: "white" }}>
       <Stack spacing={1}>
         <Typography variant="h6" component="h6">
-          Progress
+          Progress(all Done tasks, without filter)
         </Typography>
         <div>{`${percentOfDone}% (Done ${numberOfDoneTasks} out of ${tasks.length})`}</div>
         <BorderLinearProgress variant="determinate" value={percentOfDone} />

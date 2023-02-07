@@ -1,6 +1,8 @@
 import { TaskBox } from "./TaskBox";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import styled from "styled-components";
+import { Typography } from "@mui/material";
+import { percentage } from "../../utils";
 
 const Container = styled.div`
   padding: 5px;
@@ -13,10 +15,12 @@ export const TaskBoard = ({
   title,
   tasks,
   tasksType,
+  allTasksLength,
 }: {
   title: string;
   tasks: any;
   tasksType: string;
+  allTasksLength: number;
 }) => {
   const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
     background: "white",
@@ -31,7 +35,10 @@ export const TaskBoard = ({
   });
   return (
     <Container>
-      <div>{title}</div>
+      <Typography fontWeight={"bold"} textAlign={"center"}>
+        {title}({tasks.length} / {allTasksLength}) (
+        {percentage(tasks.length, allTasksLength)}%)
+      </Typography>
       <Droppable droppableId={tasksType}>
         {(provided, snapshot) => (
           <div
