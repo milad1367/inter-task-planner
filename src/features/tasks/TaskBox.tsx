@@ -1,4 +1,4 @@
-import { Chip, Stack, Grid, IconButton, Button } from "@mui/material";
+import { Chip, Grid, IconButton, Button, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
 import DriveFileMoveIcon from "@mui/icons-material/DriveFileMove";
 import EditIcon from "@mui/icons-material/Edit";
@@ -7,6 +7,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { removeTask } from "./tasksSlice";
 import { HighlightText } from "../../components/HighlightText";
 import styled from "styled-components";
+import { mdColors } from "../../utils";
+
 const Container = styled.div`
   border-radius: 5px;
   border: 1px solid #c7d0d5;
@@ -88,23 +90,24 @@ export const TaskBox = ({
         <h2>
           <HighlightText searchText={key}>{description}</HighlightText>
         </h2>
-        Labels:
-        <Stack direction="row" spacing={1}>
+        <Typography> Labels:</Typography>
+        <Grid container spacing={1}>
           {labels.map((label: any, index: number) => (
-            <Chip
-              key={index}
-              label={
-                <HighlightText
-                  searchText={key}
-                  key={`label-highlight-text-${index}`}
-                >
-                  {label}
-                </HighlightText>
-              }
-              color="primary"
-            />
+            <Grid key={index} item>
+              <Chip
+                sx={{ backgroundColor: mdColors[index] }}
+                label={
+                  <HighlightText
+                    searchText={key}
+                    key={`label-highlight-text-${index}`}
+                  >
+                    {label}
+                  </HighlightText>
+                }
+              />
+            </Grid>
           ))}
-        </Stack>
+        </Grid>
         {!!attachments.length && (
           <Button onClick={() => navigate(`/tasks/${id}`)} size="large">
             VIEW ATTACHMENTS
