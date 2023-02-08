@@ -7,82 +7,90 @@ import {
   FormControl,
   InputLabel,
   OutlinedInput,
-  TextField,
   Select,
   MenuItem,
-  SelectChangeEvent,
+  Grid,
+  Chip,
 } from "@mui/material";
-import dayjs, { Dayjs } from "dayjs";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { useState } from "react";
-import { LocalizationProvider } from "@mui/x-date-pickers";
 import { useDispatch } from "react-redux";
 import { taskUpdated } from "./tasksSlice";
 import { useParams, useNavigate } from "react-router-dom";
 import { Upload } from "../../components/Upload";
+import { mdColors } from "../../utils";
+import { Comments } from "../../components/Comments";
 
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
   left: "50%",
-  height: "90%",
+  width: 400,
+  minHeight: "80vh",
+  maxHeight: "80vh",
   overflow: "auto",
   transform: "translate(-50%, -50%)",
-  width: 400,
   bgcolor: "background.paper",
   borderRadius: 2,
   boxShadow: 24,
   p: 4,
 };
-// const _labels = ["test1", "test2"]; //TODO
-
+export interface EditTaskState {
+  title: string;
+  description: string;
+  comment: string;
+}
 export const SingleTaskForm = () => {
-  const { taskId } = useParams();
-  const navigate = useNavigate();
-  const task = useSelector((state: any) =>
-    state.tasks.find((task: any) => task.id === taskId)
-  );
-
   const [open, setOpen] = useState(true);
-  const [title, setTitle] = useState(task.title);
-  const [description, setDescription] = useState(task.description);
-  const [status, setStatus] = useState(task.status);
-  const [date, setDate] = useState<Dayjs>(task.date);
-  const [comment, setComment] = useState<string>("");
-  // const [labels, setLabels] = useState(task.labels);
-  const [attachments, setAttachments] = useState<string[]>(
-    task?.attachments || []
-  );
+  const { taskId } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { title, description, status, comments, attachments, date, labels } =
+    useSelector((state: any) =>
+      state.tasks.find((task: any) => task.id === taskId)
+    );
+  const [editedTask, setEditedTask] = useState<EditTaskState>({
+    title,
+    description,
+    comment: "",
+  });
+
   const onResetStates = () => {
-    setComment("");
+    setEditedTask((prev) => ({ ...prev, comment: "", attachment: "" }));
   };
   const handleClose = () => {
     setOpen(false);
     onResetStates();
     navigate("/");
   };
-  const handleSelectChange = (event: SelectChangeEvent) => {
-    setStatus(event.target.value as string);
+
+  const handleOnChange = (e: any) => {
+    const { name, value } = e.target;
+    if (name) {
+      setEditedTask((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
-  const handleDateChange = (newValue: Dayjs | null) => {
-    setDate(newValue || dayjs());
-  };
-  const dispatch = useDispatch();
+  const onUpdateTask = (e: any) => {
+    const name: string = e.target.name;
 
-  const onUpdateTask = () => {
     dispatch(
       taskUpdated({
         id: taskId,
-        title,
-        description,
-        comment,
+        [name]: editedTask[name as keyof EditTaskState],
+      })
+    );
+    if (name === "comment") {
+      setEditedTask((prev) => ({ ...prev, comment: "" }));
+    }
+    //onResetStates();
+  };
+  const onUploadFile = (attachments: string[]) => {
+    dispatch(
+      taskUpdated({
+        id: taskId,
         attachments,
       })
     );
-    onResetStates();
   };
 
   return (
@@ -101,10 +109,21 @@ export const SingleTaskForm = () => {
             <FormControl fullWidth sx={{ m: 1 }}>
               <InputLabel htmlFor="outlined-adornment-title">Title</InputLabel>
               <OutlinedInput
-                value={title}
-                onChange={(e: any) => setTitle(e.target.value)}
+                name="title"
+                value={editedTask?.title}
+                onChange={handleOnChange}
                 id="outlined-adornment-title"
                 label="Title"
+                endAdornment={
+                  <Button
+                    name={"title"}
+                    id="title-save-button"
+                    onClick={onUpdateTask}
+                    color="success"
+                  >
+                    Save
+                  </Button>
+                }
               />
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }}>
@@ -112,41 +131,40 @@ export const SingleTaskForm = () => {
                 Description
               </InputLabel>
               <OutlinedInput
+                name="description"
                 id="outlined-adornment-description"
                 label="Description"
-                value={description}
-                onChange={(e: any) => setDescription(e.target.value)}
-              />
-            </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <TextField
-                onChange={(e: any) => setComment(e.target.value)}
-                value={comment}
-                placeholder="Add your comment"
-                multiline
-                rows={2}
-              />
-            </FormControl>
-            <FormControl sx={{ m: 1 }}>
-              <Upload
-                list={attachments}
-                onChange={(attachments: string[]) =>
-                  setAttachments(attachments)
+                onChange={handleOnChange}
+                value={editedTask?.description}
+                endAdornment={
+                  <Button
+                    name="description"
+                    id="description-save-button"
+                    onClick={onUpdateTask}
+                    color="success"
+                  >
+                    Save
+                  </Button>
                 }
-                titleButton={"Add Attachment"}
               />
             </FormControl>
-
             <FormControl fullWidth sx={{ m: 1 }}>
-              <LocalizationProvider dateAdapter={AdapterMoment}>
-                <DateTimePicker
-                  label="Date&Time picker"
-                  value={date}
-                  disabled
-                  onChange={handleDateChange}
-                  renderInput={(params: any) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
+              <OutlinedInput value={date} disabled />
+            </FormControl>
+            <FormControl fullWidth sx={{ m: 1 }}>
+              <Typography variant="h6" component="h6">
+                Labels:
+              </Typography>
+              <Grid container spacing={1}>
+                {labels.map((label: any, index: number) => (
+                  <Grid key={index} item>
+                    <Chip
+                      sx={{ backgroundColor: mdColors[index] }}
+                      label={label}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }}>
               <InputLabel id="select-label">Status</InputLabel>
@@ -156,7 +174,6 @@ export const SingleTaskForm = () => {
                 value={status}
                 disabled
                 label="Status"
-                onChange={handleSelectChange}
               >
                 <MenuItem value={"Pending"}>Pending</MenuItem>
                 <MenuItem value={"Processing"}>Processing</MenuItem>
@@ -164,42 +181,34 @@ export const SingleTaskForm = () => {
               </Select>
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }}>
-              {/* <Autocomplete
-                multiple
-                id="tags-standard"
-                options={_labels}
-                getOptionLabel={(option) => option}
-                value={labels}
-                disabled
-                onChange={(event, newValue) => {
-                  setLabels([...newValue]);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="standard"
-                    label="Labels"
-                    placeholder="Favorites"
-                  />
-                )}
-              /> */}
+              <Upload list={attachments} onChange={onUploadFile} />
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }}>
-              <Button
-                onClick={onUpdateTask}
-                fullWidth
-                variant="contained"
-                color="success"
-              >
-                Save
-              </Button>
+              <OutlinedInput
+                name="comment"
+                type="text"
+                onChange={handleOnChange}
+                value={editedTask.comment}
+                placeholder="Add your comment"
+                endAdornment={
+                  <Button
+                    name="comment"
+                    id="description-save-button"
+                    onClick={onUpdateTask}
+                    color="success"
+                  >
+                    Save
+                  </Button>
+                }
+              />
             </FormControl>
-            <div>
-              comments:
-              {task.comments.map((comment: string) => (
-                <div key={comment}> {comment} </div>
-              ))}
-            </div>
+
+            <FormControl fullWidth sx={{ m: 1 }}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Comments:
+              </Typography>
+              <Comments items={comments} />
+            </FormControl>
           </Box>
         </Box>
       </Modal>

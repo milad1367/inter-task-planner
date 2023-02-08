@@ -7,11 +7,12 @@ import styled from "styled-components";
 interface UploadProps {
   list?: string[];
   onChange: (files: string[]) => void;
+  [x: string]: any;
 }
 
 const Container = styled.div``;
 
-export const Upload = ({ list = [], onChange }: UploadProps) => {
+export const Upload = ({ list = [], onChange, ...rest }: UploadProps) => {
   const [files, setFiles] = useState<string[]>(list || []);
   const onDelete = (index: number) => {
     const shallowFiles = files.slice();
@@ -21,7 +22,7 @@ export const Upload = ({ list = [], onChange }: UploadProps) => {
   useEffect(() => {
     onChange(files);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(files)]);
+  }, [JSON.stringify(files)]); //TODO
   const OnChange = (e: any) => {
     e.preventDefault();
     const file = e?.target?.files[0];

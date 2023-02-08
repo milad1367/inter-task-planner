@@ -79,9 +79,9 @@ const tasksSlice = createSlice({
       const { id, title, description, comment, attachments } = action.payload;
       const existingTask = state.find((task: any) => task.id === id);
       if (existingTask) {
-        existingTask.title = title;
-        existingTask.description = description;
-        existingTask.attachments = attachments;
+        existingTask.title = title || existingTask.title;
+        existingTask.description = description || existingTask.description;
+        existingTask.attachments = attachments || existingTask.attachments;
         if (!!comment) {
           existingTask.comments.push(comment);
         }
