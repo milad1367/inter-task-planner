@@ -115,15 +115,19 @@ export const SingleTaskForm = () => {
                 id="outlined-adornment-title"
                 label="Title"
                 endAdornment={
-                  <Button
-                    disableRipple
-                    name={"title"}
-                    id="title-save-button"
-                    onClick={onUpdateTask}
-                    color="success"
-                  >
-                    Save
-                  </Button>
+                  <>
+                    {editedTask?.title !== title && (
+                      <Button
+                        disableRipple
+                        name={"title"}
+                        id="title-save-button"
+                        onClick={onUpdateTask}
+                        color="success"
+                      >
+                        Save
+                      </Button>
+                    )}
+                  </>
                 }
               />
             </FormControl>
@@ -138,15 +142,19 @@ export const SingleTaskForm = () => {
                 onChange={handleOnChange}
                 value={editedTask?.description}
                 endAdornment={
-                  <Button
-                    disableRipple
-                    name="description"
-                    id="description-save-button"
-                    onClick={onUpdateTask}
-                    color="success"
-                  >
-                    Save
-                  </Button>
+                  <>
+                    {editedTask.description !== description && (
+                      <Button
+                        disableRipple
+                        name="description"
+                        id="description-save-button"
+                        onClick={onUpdateTask}
+                        color="success"
+                      >
+                        Save
+                      </Button>
+                    )}
+                  </>
                 }
               />
             </FormControl>
@@ -193,15 +201,19 @@ export const SingleTaskForm = () => {
                 value={editedTask.comment}
                 placeholder="Add your comment"
                 endAdornment={
-                  <Button
-                    disableRipple
-                    name="comment"
-                    id="description-save-button"
-                    onClick={onUpdateTask}
-                    color="success"
-                  >
-                    Save
-                  </Button>
+                  <>
+                    {!!editedTask.comment && (
+                      <Button
+                        disableRipple
+                        name="comment"
+                        id="comment-save-button"
+                        onClick={onUpdateTask}
+                        color="success"
+                      >
+                        Save
+                      </Button>
+                    )}
+                  </>
                 }
               />
             </FormControl>
