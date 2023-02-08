@@ -116,6 +116,7 @@ export const SingleTaskForm = () => {
                 label="Title"
                 endAdornment={
                   <Button
+                    disableRipple
                     name={"title"}
                     id="title-save-button"
                     onClick={onUpdateTask}
@@ -138,6 +139,7 @@ export const SingleTaskForm = () => {
                 value={editedTask?.description}
                 endAdornment={
                   <Button
+                    disableRipple
                     name="description"
                     id="description-save-button"
                     onClick={onUpdateTask}
@@ -192,6 +194,7 @@ export const SingleTaskForm = () => {
                 placeholder="Add your comment"
                 endAdornment={
                   <Button
+                    disableRipple
                     name="comment"
                     id="description-save-button"
                     onClick={onUpdateTask}
