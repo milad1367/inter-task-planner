@@ -9,7 +9,7 @@ import { TaskBoard } from "./TaskBoard";
 import { useDispatch } from "react-redux";
 import { setTasks } from "./tasksSlice";
 import { removeByIndex, reorder } from "../../utils";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 export const Boards = () => {
   const [params] = useSearchParams();
@@ -43,60 +43,65 @@ export const Boards = () => {
     });
   }, [tasks, key, filter]);
 
-  const onDragEnd = (res: DropResult) => {
-    // TODO WRAP IN USECALLBACK
-    const { source, destination } = res;
-    if (!destination) return;
-    const itemsSplitByListIds = groupBy(tasks, (task: any) => {
-      return task.status;
-    });
+  const onDragEnd = useCallback(
+    (res: DropResult) => {
+      // TODO WRAP IN USECALLBACK
+      const { source, destination } = res;
+      if (!destination) return;
+      const itemsSplitByListIds = groupBy(tasks, (task: any) => {
+        return task.status;
+      });
 
-    if (source.droppableId === destination.droppableId) {
-      // Items are in the same list, so just re-order the list array
-      const target = itemsSplitByListIds[destination.droppableId];
-      const reordered: any = reorder<any>(
-        [...target],
-        source.index,
-        destination.index
+      if (source.droppableId === destination.droppableId) {
+        // Items are in the same list, so just re-order the list array
+        const target = itemsSplitByListIds[destination.droppableId];
+        const reordered: any = reorder<any>(
+          [...target],
+          source.index,
+          destination.index
+        );
+
+        // Get rid of old list and replace with updated one
+        const filteredCards = tasks.filter(
+          (task: any) => task.status !== source.droppableId
+        );
+        return dispatch(
+          setTasks({ newTasks: [...filteredCards, ...reordered] })
+        );
+      }
+
+      // Items are in different lists, so just change the item's listId
+
+      const sourceItems = tasks.filter(
+        (task: any) => task.status === source.droppableId
+      );
+      const sourceWithoutDragged = removeByIndex(sourceItems, source.index);
+
+      const target = tasks.filter(
+        (task: any) => task.status === destination.droppableId
       );
 
-      // Get rid of old list and replace with updated one
-      const filteredCards = tasks.filter(
-        (task: any) => task.status !== source.droppableId
+      const itemWithNewId = {
+        ...sourceItems[source.index],
+        status: destination.droppableId,
+      };
+
+      target.splice(destination.index, 0, itemWithNewId);
+
+      const filteredTasks = tasks.filter(
+        (task: any) =>
+          task.status !== source.droppableId &&
+          task.status !== destination.droppableId
       );
-      return dispatch(setTasks({ newTasks: [...filteredCards, ...reordered] }));
-    }
 
-    // Items are in different lists, so just change the item's listId
-
-    const sourceItems = tasks.filter(
-      (task: any) => task.status === source.droppableId
-    );
-    const sourceWithoutDragged = removeByIndex(sourceItems, source.index);
-
-    const target = tasks.filter(
-      (task: any) => task.status === destination.droppableId
-    );
-
-    const itemWithNewId = {
-      ...sourceItems[source.index],
-      status: destination.droppableId,
-    };
-
-    target.splice(destination.index, 0, itemWithNewId);
-
-    const filteredTasks = tasks.filter(
-      (task: any) =>
-        task.status !== source.droppableId &&
-        task.status !== destination.droppableId
-    );
-
-    dispatch(
-      setTasks({
-        newTasks: [...filteredTasks, ...sourceWithoutDragged, ...target],
-      })
-    );
-  };
+      dispatch(
+        setTasks({
+          newTasks: [...filteredTasks, ...sourceWithoutDragged, ...target],
+        })
+      );
+    },
+    [tasks, dispatch]
+  );
   const boards = ["Pending", "Processing", "Done"];
   return (
     <section>
