@@ -13,3 +13,6 @@ export const removeByIndex = (list: any[], index: number) => [
 export function percentage(partialValue: number, totalValue: number) {
   return Math.round((100 * partialValue) / totalValue);
 }
+
+export const labelsSrc = [...Array(10)].map((item, index) => `Label${index}`);
+export const taskStatus = ["Pending", "Processing", "Done"];

@@ -11,16 +11,18 @@ import {
   MenuItem,
   SelectChangeEvent,
   Autocomplete,
+  Grid,
 } from "@mui/material";
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { taskAdded } from "./tasksSlice";
 
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import React from "react";
+import { useState } from "react";
+
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { useDispatch } from "react-redux";
-import { labels as _labels } from "../../consts";
+import { labelsSrc, taskStatus } from "../../utils";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { Upload } from "../../components/Upload";
 
@@ -30,27 +32,30 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 400,
+  minHeight: "80vh",
+  maxHeight: "80vh",
   overflow: "auto",
-  height: "90%",
   bgcolor: "background.paper",
   borderRadius: 2,
   boxShadow: 24,
   p: 4,
 };
 export const AddTask = () => {
-  const [open, setOpen] = React.useState(false);
-  const [title, setTitle] = React.useState("");
-  const [description, setDescription] = React.useState("");
-  const [attachments, setAttachments] = React.useState<string[]>([]);
-  const [status, setStatus] = React.useState("");
-  const [date, setDate] = React.useState<Dayjs | null>(dayjs());
-  const [labels, setLabels] = React.useState([_labels[0]]);
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [attachments, setAttachments] = useState<string[]>([]);
+  const [status, setStatus] = useState("");
+  const [date, setDate] = useState<Dayjs | null>(null);
+  const [labels, setLabels] = useState<string[]>([]);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
     setTitle(""); //TODO, change to useReducer, as a object
     setDescription("");
+    setDate(null);
+    setStatus("");
     //...
   };
   const handleSelectChange = (event: SelectChangeEvent) => {
@@ -62,11 +67,11 @@ export const AddTask = () => {
   };
   const dispatch = useDispatch();
 
-  const handleOnAddedTask = () => {
+  const handleOnAddedTask = (event: any) => {
+    event.preventDefault();
     dispatch(taskAdded(title, description, date, labels, status, attachments));
     handleClose();
   };
-  //TODO some inputs are required
   return (
     <>
       <Button onClick={handleOpen} variant="outlined">
@@ -83,7 +88,7 @@ export const AddTask = () => {
             Add new Task
           </Typography>
           <form onSubmit={handleOnAddedTask}>
-            <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+            <Grid sx={{ minHeight: "580px", height: "100%" }} container>
               <FormControl fullWidth sx={{ m: 1 }}>
                 <InputLabel htmlFor="outlined-adornment-title">
                   Title
@@ -113,7 +118,9 @@ export const AddTask = () => {
                     label="Date&Time picker"
                     value={date}
                     onChange={handleDateChange}
-                    renderInput={(params: any) => <TextField {...params} />}
+                    renderInput={(params: any) => (
+                      <TextField required {...params} />
+                    )}
                   />
                 </LocalizationProvider>
               </FormControl>
@@ -127,18 +134,19 @@ export const AddTask = () => {
                   required
                   onChange={handleSelectChange}
                 >
-                  <MenuItem value={"Pending"}>Pending</MenuItem>
-                  <MenuItem value={"Processing"}>Processing</MenuItem>
-                  <MenuItem value={"Done"}>Done</MenuItem>
+                  {taskStatus.map((item, index) => (
+                    <MenuItem key={index} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
               <FormControl fullWidth sx={{ m: 1 }}>
                 <Autocomplete
                   multiple
                   id="tags-standard"
-                  options={_labels}
+                  options={labelsSrc}
                   getOptionLabel={(option) => option}
-                  value={labels}
                   onChange={(event, newValue) => {
                     setLabels([...newValue]);
                   }}
@@ -147,7 +155,7 @@ export const AddTask = () => {
                       {...params}
                       variant="standard"
                       label="Labels"
-                      placeholder="Favorites"
+                      placeholder="Label"
                     />
                   )}
                 />
@@ -159,7 +167,7 @@ export const AddTask = () => {
                   }
                 />
               </FormControl>
-              <FormControl fullWidth sx={{ m: 1 }}>
+              <FormControl fullWidth sx={{ m: 1, justifyContent: "flex-end" }}>
                 <Button
                   type="submit"
                   fullWidth
@@ -169,7 +177,7 @@ export const AddTask = () => {
                   Add
                 </Button>
               </FormControl>
-            </Box>
+            </Grid>
           </form>
         </Box>
       </Modal>
