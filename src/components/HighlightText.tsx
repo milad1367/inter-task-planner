@@ -6,8 +6,12 @@ export const HighlightText = ({
   searchText: string;
 }) => {
   const parts = children.split(new RegExp(`(${searchText})`, "gi"));
+  if (!searchText) {
+    return <>{children}</>;
+  }
+
   return (
-    <span>
+    <>
       {parts.map((part, i) => (
         <span
           key={i}
@@ -20,6 +24,6 @@ export const HighlightText = ({
           {part}
         </span>
       ))}
-    </span>
+    </>
   );
 };
