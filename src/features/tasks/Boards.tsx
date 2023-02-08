@@ -36,10 +36,9 @@ export const Boards = () => {
         description,
         labels,
       }))(task);
-      const hasKey = JSON.stringify(picked)
+      const hasKey = JSON.stringify(Object.values(picked))
         .toLowerCase()
         .includes(key.toLowerCase());
-
       return hasKey && isInTime;
     });
   }, [tasks, key, filter]);
