@@ -30,26 +30,38 @@ const style = {
 
 export const SearchAndFilters = () => {
   let [params, setParams] = useSearchParams();
-  const filter = params.get("filter");
-  const defaultDate = filter ? dayjs(filter) : null;
+  const [_startDate, _endDate] = params.getAll("filter");
+
   const key = params.get("key");
   const [search, setSearch] = useState(key || "");
-  const [date, setDate] = useState<Dayjs | null>(defaultDate);
+  const [startDate, setStartDate] = useState<Dayjs | null>(
+    _startDate ? dayjs(_startDate) : null
+  );
+  const [endDate, setEndDate] = useState<Dayjs | null>(
+    _endDate ? dayjs(_endDate) : null
+  );
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const handleDateChange = (newValue: Dayjs | null) => {
-    setDate(newValue);
+
+  const handleStartDateChange = (newValue: Dayjs | null) => {
+    setStartDate(newValue);
   };
-  const onFilterTasks = () => {
-    let params = {};
+  const handleEndDateChange = (newValue: Dayjs | null) => {
+    setEndDate(newValue);
+  };
+
+  const onFilterTasks = (e: any) => {
+    e.preventDefault();
+    let _params = {};
+
     if (search) {
-      params = { ...params, key: search };
+      _params = { ..._params, key: search };
     }
-    if (date) {
-      params = { ...params, filter: date.format() };
+    if (startDate && endDate) {
+      _params = { ..._params, filter: [startDate.format(), endDate.format()] };
     }
-    setParams(params); // TODO NEED MORE SAFE WAY! //http://localhost:3000/?filter=2023-02-03T22%3A39%3A00.000Z
+    setParams(_params);
     handleClose();
   };
   return (
@@ -69,35 +81,55 @@ export const SearchAndFilters = () => {
             Search & Filter
           </Typography>
           <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <InputLabel htmlFor="outlined-adornment-title">Search</InputLabel>
-              <OutlinedInput
-                value={search}
-                onChange={(e: any) => setSearch(e.target.value)}
-                id="outlined-adornment-search"
-                label="Search"
-              />
-            </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DateTimePicker
-                  label="Date&Time picker"
-                  value={date}
-                  onChange={handleDateChange}
-                  renderInput={(params: any) => <TextField {...params} />}
+            <form onSubmit={onFilterTasks}>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <InputLabel htmlFor="outlined-adornment-title">
+                  Search
+                </InputLabel>
+                <OutlinedInput
+                  value={search}
+                  onChange={(e: any) => setSearch(e.target.value)}
+                  id="outlined-adornment-search"
+                  label="Search"
                 />
-              </LocalizationProvider>
-            </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <Button
-                onClick={onFilterTasks}
-                fullWidth
-                variant="contained"
-                color="success"
-              >
-                Apply
-              </Button>
-            </FormControl>
+              </FormControl>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DateTimePicker
+                    label="Start date"
+                    value={startDate}
+                    maxDateTime={endDate ? endDate : undefined}
+                    onChange={handleStartDateChange}
+                    renderInput={(params: any) => (
+                      <TextField required={!!endDate} {...params} />
+                    )}
+                  />
+                </LocalizationProvider>
+              </FormControl>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DateTimePicker
+                    label="End date"
+                    value={endDate}
+                    onChange={handleEndDateChange}
+                    minDateTime={startDate ? startDate : undefined}
+                    renderInput={(params: any) => (
+                      <TextField required={!!startDate} {...params} />
+                    )}
+                  />
+                </LocalizationProvider>
+              </FormControl>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="success"
+                >
+                  Apply
+                </Button>
+              </FormControl>
+            </form>
           </Box>
         </Box>
       </Modal>

@@ -1,12 +1,13 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
-import { sub } from "date-fns";
+import dayjs from "dayjs";
+
 import { ITask } from "../../models";
 const initialState: ITask[] = [
   {
     id: "1",
     title: "test",
     description: "test",
-    date: sub(new Date(), { minutes: 10 }).toISOString(),
+    date: dayjs().add(2, "day").format(),
     labels: ["redux", "test2"],
     status: "Pending",
     comments: ["lorm epsom"],
@@ -16,7 +17,7 @@ const initialState: ITask[] = [
     id: "2",
     title: "test2",
     description: "test2",
-    date: sub(new Date(), { minutes: 10 }).toISOString(),
+    date: dayjs().add(3, "day").format(),
     labels: ["saga", "test2"],
     status: "Processing",
     comments: ["lorm epsom"],
@@ -26,7 +27,7 @@ const initialState: ITask[] = [
     id: "3",
     title: "test3",
     description: "test3",
-    date: sub(new Date(), { minutes: 10 }).toISOString(),
+    date: dayjs().subtract(2, "day").format(),
     labels: ["test1", "test2", "test3"],
     status: "Done",
     comments: ["lorm epsom"],
@@ -36,7 +37,7 @@ const initialState: ITask[] = [
     id: "4",
     title: "test4",
     description: "test4",
-    date: sub(new Date(), { minutes: 10 }).toISOString(),
+    date: dayjs().subtract(4, "day").format(),
     labels: ["test1", "test2", "test3"],
     status: "Done",
     comments: ["lorm epsom"],

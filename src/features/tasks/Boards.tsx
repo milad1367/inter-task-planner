@@ -1,6 +1,9 @@
 import { useAppSelector } from "../../app/hooks";
 import { useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+
 import { DragDropContext } from "react-beautiful-dnd";
 import { DropResult } from "react-beautiful-dnd";
 import { groupBy } from "lodash";
@@ -12,36 +15,42 @@ import { removeByIndex, reorder } from "../../utils";
 import { useCallback, useMemo } from "react";
 import { RootState } from "../../app/store";
 import { ITask } from "../../models";
+
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
+
 export const Boards = () => {
   const [params] = useSearchParams();
   const dispatch = useDispatch();
-  const filter = params.get("filter");
+  const [startDate, endDate] = params.getAll("filter");
   const key = params.get("key") || "";
   const tasks = useAppSelector((state: RootState) => state.tasks);
 
   const filteredTasks = useMemo(() => {
-    if (!key && !filter) {
+    if (!key && (!startDate || !endDate)) {
       return tasks;
     }
     return tasks?.filter((task: ITask) => {
-      let isInTime = true;
-      if (filter) {
+      let isInTimeRange = true;
+      if (startDate && endDate) {
         const taskDate = dayjs(task.date);
-        const filterDate = dayjs(filter);
-
-        isInTime = taskDate.isBefore(filterDate);
+        isInTimeRange =
+          taskDate.isSameOrAfter(dayjs(startDate)) &&
+          taskDate.isSameOrBefore(dayjs(endDate));
       }
       const picked = (({ title, description, labels }) => ({
         title,
         description,
         labels,
       }))(task);
-      const hasKey = JSON.stringify(Object.values(picked))
-        .toLowerCase()
-        .includes(key.toLowerCase());
-      return hasKey && isInTime;
+      const searchFilter = !!key
+        ? JSON.stringify(Object.values(picked))
+            .toLowerCase()
+            .includes(key.toLowerCase())
+        : true;
+      return searchFilter && isInTimeRange;
     });
-  }, [tasks, key, filter]);
+  }, [tasks, key, startDate, endDate]);
 
   const onDragEnd = useCallback(
     (res: DropResult) => {
