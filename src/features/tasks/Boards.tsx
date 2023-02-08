@@ -41,8 +41,7 @@ export const Boards = () => {
 
       return hasKey && isInTime;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(tasks), key, filter]);
+  }, [tasks, key, filter]);
 
   const onDragEnd = (res: DropResult) => {
     // TODO WRAP IN USECALLBACK
