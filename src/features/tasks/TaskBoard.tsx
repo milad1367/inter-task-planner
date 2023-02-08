@@ -11,6 +11,17 @@ const Container = styled.div`
   border-radius: 5px;
   background: white;
 `;
+const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
+  background: "white",
+  padding: "10px",
+  marginBottom: "5px",
+  borderRadius: "5px",
+
+  ...draggableStyle,
+});
+const getListStyle = (isDraggingOver: boolean) => ({
+  minHeight: "100vh",
+});
 export const TaskBoard = ({
   title,
   tasks,
@@ -22,17 +33,6 @@ export const TaskBoard = ({
   tasksType: string;
   allTasksLength: number;
 }) => {
-  const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
-    background: "white",
-    padding: "10px",
-    marginBottom: "5px",
-    borderRadius: "5px",
-
-    ...draggableStyle,
-  });
-  const getListStyle = (isDraggingOver: boolean) => ({
-    minHeight: 350,
-  });
   return (
     <Container>
       <Typography fontWeight={"bold"} textAlign={"center"}>
