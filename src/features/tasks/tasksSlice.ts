@@ -1,16 +1,7 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 import { sub } from "date-fns";
-export interface Task {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  labels: string[];
-  status: string;
-  comments: string[];
-  attachments: string[];
-}
-const initialState: any = [
+import { ITask } from "../../models";
+const initialState: ITask[] = [
   {
     id: "1",
     title: "test",
@@ -52,13 +43,20 @@ const initialState: any = [
     attachments: [],
   },
 ];
+
+//IMPORTANT NOTE,
+//With redux toolkit I can mutate state inside of any case of reducer function!
+//https://redux-toolkit.js.org/usage/immer-reducers#redux-toolkit-and-immer
+// As we know in redux old version we have to use something like Immer
+//IMPORTANT NOTE,
+
 const tasksSlice = createSlice({
   name: "tasks",
   initialState,
   reducers: {
     taskAdded: {
       reducer(state, action: any) {
-        state.push(action.payload); // Important note, redux toolkit hast internal Immer, so I can change state directly
+        state.push(action.payload);
       },
       prepare(title, description, date, labels, status, attachments) {
         return {
@@ -77,7 +75,7 @@ const tasksSlice = createSlice({
     },
     taskUpdated(state, action) {
       const { id, title, description, comment, attachments } = action.payload;
-      const existingTask = state.find((task: any) => task.id === id);
+      const existingTask = state.find((task: ITask) => task.id === id);
       if (existingTask) {
         existingTask.title = title || existingTask.title;
         existingTask.description = description || existingTask.description;
@@ -89,7 +87,7 @@ const tasksSlice = createSlice({
     },
     removeTask(state, { payload }) {
       const { taskId } = payload;
-      return state.filter(({ id }: any) => id !== taskId.toString());
+      return state.filter(({ id }) => id !== taskId.toString());
     },
     setTasks(state, { payload }) {
       const { newTasks } = payload;

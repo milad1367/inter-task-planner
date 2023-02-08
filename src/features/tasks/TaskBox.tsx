@@ -92,7 +92,7 @@ export const TaskBox = ({
         </h2>
         <Typography> Labels:</Typography>
         <Grid container spacing={1}>
-          {labels.map((label: any, index: number) => (
+          {labels.map((label: string, index: number) => (
             <Grid key={index} item>
               <Chip
                 sx={{ backgroundColor: mdColors[index] }}

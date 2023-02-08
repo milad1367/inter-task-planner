@@ -2,7 +2,8 @@ import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-
+import { RootState } from "../../app/store";
+import { ITask } from "../../models";
 import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
@@ -23,9 +24,9 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 }));
 
 export const Progress = () => {
-  const tasks = useSelector((state: any) => state.tasks);
+  const tasks = useSelector((state: RootState) => state.tasks);
   const numberOfDoneTasks = tasks.filter(
-    (task: any) => task.status === "Done"
+    (task: ITask) => task.status === "Done"
   ).length;
   const percentOfDone = percentage(numberOfDoneTasks, Number(tasks.length));
   return (

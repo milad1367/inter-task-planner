@@ -10,19 +10,20 @@ import { useDispatch } from "react-redux";
 import { setTasks } from "./tasksSlice";
 import { removeByIndex, reorder } from "../../utils";
 import { useCallback, useMemo } from "react";
-
+import { RootState } from "../../app/store";
+import { ITask } from "../../models";
 export const Boards = () => {
   const [params] = useSearchParams();
   const dispatch = useDispatch();
   const filter = params.get("filter");
   const key = params.get("key") || "";
-  const tasks = useAppSelector((state: any) => state.tasks);
+  const tasks = useAppSelector((state: RootState) => state.tasks);
 
   const filteredTasks = useMemo(() => {
     if (!key && !filter) {
       return tasks;
     }
-    return tasks?.filter((task: any) => {
+    return tasks?.filter((task: ITask) => {
       let isInTime = true;
       if (filter) {
         const taskDate = dayjs(task.date);
@@ -45,7 +46,6 @@ export const Boards = () => {
 
   const onDragEnd = useCallback(
     (res: DropResult) => {
-      // TODO WRAP IN USECALLBACK
       const { source, destination } = res;
       if (!destination) return;
       const itemsSplitByListIds = groupBy(tasks, (task: any) => {
@@ -63,7 +63,7 @@ export const Boards = () => {
 
         // Get rid of old list and replace with updated one
         const filteredCards = tasks.filter(
-          (task: any) => task.status !== source.droppableId
+          (task: ITask) => task.status !== source.droppableId
         );
         return dispatch(
           setTasks({ newTasks: [...filteredCards, ...reordered] })
@@ -73,12 +73,12 @@ export const Boards = () => {
       // Items are in different lists, so just change the item's listId
 
       const sourceItems = tasks.filter(
-        (task: any) => task.status === source.droppableId
+        (task: ITask) => task.status === source.droppableId
       );
       const sourceWithoutDragged = removeByIndex(sourceItems, source.index);
 
       const target = tasks.filter(
-        (task: any) => task.status === destination.droppableId
+        (task: ITask) => task.status === destination.droppableId
       );
 
       const itemWithNewId = {
@@ -89,7 +89,7 @@ export const Boards = () => {
       target.splice(destination.index, 0, itemWithNewId);
 
       const filteredTasks = tasks.filter(
-        (task: any) =>
+        (task: ITask) =>
           task.status !== source.droppableId &&
           task.status !== destination.droppableId
       );
@@ -114,7 +114,7 @@ export const Boards = () => {
               <TaskBoard
                 title={board}
                 tasks={filteredTasks.filter(
-                  (item: any) => item.status === board
+                  (item: ITask) => item.status === board
                 )}
                 tasksType={board}
                 allTasksLength={tasks.length}

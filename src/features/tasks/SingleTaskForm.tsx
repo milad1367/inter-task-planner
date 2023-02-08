@@ -19,6 +19,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Upload } from "../../components/Upload";
 import { mdColors } from "../../utils";
 import { Comments } from "../../components/Comments";
+import { RootState } from "../../app/store";
+import { ITask } from "../../models";
 
 const style = {
   position: "absolute" as "absolute",
@@ -45,8 +47,8 @@ export const SingleTaskForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { title, description, status, comments, attachments, date, labels } =
-    useSelector((state: any) =>
-      state.tasks.find((task: any) => task.id === taskId)
+    useSelector<RootState, ITask | any>((state) =>
+      state.tasks.find((task) => task.id === taskId)
     );
   const [editedTask, setEditedTask] = useState<EditTaskState>({
     title,
@@ -166,7 +168,7 @@ export const SingleTaskForm = () => {
                 Labels:
               </Typography>
               <Grid container spacing={1}>
-                {labels.map((label: any, index: number) => (
+                {labels.map((label: string, index: number) => (
                   <Grid key={index} item>
                     <Chip
                       sx={{ backgroundColor: mdColors[index] }}

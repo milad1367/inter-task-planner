@@ -3,7 +3,7 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import { Typography } from "@mui/material";
 import { percentage } from "../../utils";
-
+import { ITask } from "../../models";
 const Container = styled.div`
   padding: 5px;
   box-sizing: border-box;
@@ -29,7 +29,7 @@ export const TaskBoard = ({
   allTasksLength,
 }: {
   title: string;
-  tasks: any;
+  tasks: ITask[];
   tasksType: string;
   allTasksLength: number;
 }) => {
