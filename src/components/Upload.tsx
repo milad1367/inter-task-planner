@@ -1,13 +1,17 @@
-import { Button, IconButton } from "@mui/material";
+import { Button, Grid, IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import styled from "styled-components";
 
 interface UploadProps {
   list?: string[];
   onChange: (files: string[]) => void;
-  titleButton?: string;
 }
-export const Upload = ({ list = [], onChange, titleButton }: UploadProps) => {
+
+const Container = styled.div``;
+
+export const Upload = ({ list = [], onChange }: UploadProps) => {
   const [files, setFiles] = useState<string[]>(list || []);
   const onDelete = (index: number) => {
     const shallowFiles = files.slice();
@@ -27,17 +31,24 @@ export const Upload = ({ list = [], onChange, titleButton }: UploadProps) => {
   };
 
   return (
-    <>
-      {files.map((file: string, index: number) => (
-        <div key={index}>
-          <img width={200} height={200} alt={`img${index}`} src={file} />
-          <IconButton onClick={() => onDelete(index)} aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
-        </div>
-      ))}
+    <Container>
+      <Grid spacing={1} container>
+        {files.map((file: string, index: number) => (
+          <Grid item key={index}>
+            <img width={50} height={50} alt={`img${index}`} src={file} />
+            <Grid
+              justifyContent={"center"}
+              display={"flex"}
+              alignItems={"center"}
+            >
+              <IconButton onClick={() => onDelete(index)} aria-label="delete">
+                <DeleteIcon />
+              </IconButton>
+            </Grid>
+          </Grid>
+        ))}
+      </Grid>
       <Button variant="contained" component="label">
-        {titleButton ? `${titleButton}` : "Upload"}
         <input
           onChange={OnChange}
           hidden
@@ -45,7 +56,9 @@ export const Upload = ({ list = [], onChange, titleButton }: UploadProps) => {
           multiple
           type="file"
         />
+        Attach file
+        <AttachFileIcon />
       </Button>
-    </>
+    </Container>
   );
 };
